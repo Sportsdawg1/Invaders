@@ -19,7 +19,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	final int GAME_STATE = 1;
 	final int END_STATE = 2;
 	int currentState = MENU_STATE;
+	Graphics a; 
 	Font titleFont = new Font("Arial", Font.PLAIN, 48);
+	Rocketship ship = new Rocketship(250,700,50,50);
 	//Game  = new Game(10, 10, 100, 100);
 	public GamePanel() {
 		timer = new Timer(1000/60, this);
@@ -62,7 +64,9 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		//.keyEvent = e.getKeyCode();
+		ship.keyEvent = e.getKeyCode();
+		
+		
 		if (e.getKeyCode() == KeyEvent.VK_ENTER)
 			currentState++;
 			if(currentState > END_STATE){
@@ -74,26 +78,36 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		// TODO Auto-generated method stub
 		//.keyEvent = 0;
 		System.out.println("released");
+		if(e.getKeyCode() == ship.keyEvent) {
+			ship.keyEvent = 0;
+		}
 	}
 	void updateMenuState() {
 		
 	}
 	void updateGameState() {
-		
+		ship.update();
 	}
 	void updateEndState() {
 		
 	}
 	void drawMenuState(Graphics g) {
 		g.setColor(Color.BLUE);
+		g.setFont(titleFont);
 		g.fillRect(0, 0, LeagueInvaders.WIDTH, LeagueInvaders.HEIGHT);
+		g.setColor(Color.ORANGE);
+		g.drawString("INVADERS", 10, 80);
 	}
 	void drawGameState(Graphics g) {
 		g.setColor(Color.BLACK);
 		g.fillRect(0, 0, LeagueInvaders.WIDTH, LeagueInvaders.HEIGHT);
+		ship.draw(g);
 	}
 	void drawEndState(Graphics g) {
 		g.setColor(Color.RED);
+		g.setFont(titleFont);
 		g.fillRect(0, 0, LeagueInvaders.WIDTH, LeagueInvaders.HEIGHT);
+		g.setColor(Color.GREEN);
+		g.drawString("YOU DIE", 10, 80);
 	}
 }
