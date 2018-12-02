@@ -33,6 +33,10 @@ public class ObjectManager {
 		}
 
 	}
+	
+	public int getScore() {
+		return this.score;
+	}
 
 	void draw(Graphics g) {
 		r.draw(g);
@@ -59,6 +63,7 @@ public class ObjectManager {
 		}
 		for (int i = 0; i < alienList.size(); i++) {
 			if (!alienList.get(i).isAlive) {
+				score++;
 				alienList.remove(i);
 			}
 		}
@@ -68,6 +73,7 @@ public class ObjectManager {
 		for(Alien a : alienList){
 		    if(r.collisionBox.intersects(a.collisionBox)) {
 		    		r.isAlive = false;
+		    		a.isAlive = false;
 		    }
 		}
 		

@@ -8,7 +8,11 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.image.BufferedImage;
+import java.io.IOException;
 
+import javax.imageio.ImageIO;
+import javax.swing.JFrame;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
@@ -22,10 +26,23 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 	Graphics a; 
 	Font titleFont = new Font("Arial", Font.PLAIN, 48);
 	Rocketship ship = new Rocketship(250,700,50,50);
-	ObjectManager manager = new ObjectManager(ship);
+	public static BufferedImage alienImg;
+    public static BufferedImage rocketImg;
+    public static BufferedImage bulletImg;
+    public static BufferedImage spaceImg;
+	public ObjectManager manager = new ObjectManager(ship);
 	//Game  = new Game(10, 10, 100, 100);
 	public GamePanel() {
 		timer = new Timer(1000/60, this);
+		try {
+            alienImg = ImageIO.read(this.getClass().getResourceAsStream("alien.png"));
+            rocketImg = ImageIO.read(this.getClass().getResourceAsStream("rocket.png"));
+            bulletImg = ImageIO.read(this.getClass().getResourceAsStream("bullet.png"));
+            spaceImg = ImageIO.read(this.getClass().getResourceAsStream("space.png"));
+		} catch (IOException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+		}
 	}
 	void startGame() {
 		timer.start();
@@ -49,6 +66,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
              updateMenuState();
 		 } else if (currentState == GAME_STATE) {
              updateGameState();
+             
 		 } else if (currentState == END_STATE) {
              updateEndState();
          }
@@ -73,9 +91,14 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 			if(currentState > END_STATE){
 				currentState = MENU_STATE;
 			}
+			if(currentState == MENU_STATE) {
+				ship = new Rocketship(250,700,50,50);
+				manager = new ObjectManager(ship);
+				ship.isAlive = true;
+			}
 		}
 		if (e.getKeyCode() == KeyEvent.VK_SPACE) {
-			manager.addProjectile(new Projectile(ship.x, ship.y, 10, 10));
+			manager.addProjectile(new Projectile(ship.x + ship.width/2 - 5, ship.y, 10, 10));
 		}
 	}
 	@Override
@@ -95,6 +118,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 		manager.manageEnemies();
 		manager.checkCollision();
 		manager.purgeObjects();
+		JFrame f = ((JFrame) (this.getParent().getParent().getParent().getParent()));
+		f.setTitle("Invaders - " + manager.getScore());
 		if(manager.r.isAlive == false) {
 			currentState = END_STATE;
 		}
